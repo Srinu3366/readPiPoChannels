@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:CommunicationChannelServiceVi" xmlns:urn1="urn:com.sap.aii.ibdir.server.api.types" xmlns:urn2="urn:com.sap.aii.ib.server.api.types">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:query>
+         <urn:CommunicationChannelQueryRequest>
+         </urn:CommunicationChannelQueryRequest>
+      </urn:query>
+   </soapenv:Body>
+</soapenv:Envelope>

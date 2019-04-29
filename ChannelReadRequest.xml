@@ -1,0 +1,14 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:CommunicationChannelServiceVi" xmlns:urn1="urn:com.sap.aii.ibdir.server.api.types">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:read>
+         <urn:CommunicationChannelReadRequest>
+            <urn1:CommunicationChannelID>
+               <urn1:PartyID>{{PartyID}}</urn1:PartyID>
+               <urn1:ComponentID>{{ComponentID}}</urn1:ComponentID>
+               <urn1:ChannelID>{{ChannelID}}</urn1:ChannelID>
+            </urn1:CommunicationChannelID>
+         </urn:CommunicationChannelReadRequest>
+      </urn:read>
+   </soapenv:Body>
+</soapenv:Envelope>
