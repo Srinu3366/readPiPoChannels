@@ -11,13 +11,13 @@ $sftpChannels = @()
 $idocChannels = @()
 $otherChannels = @()
 
-foreach ($property in Get-Content .\Properties.json | ConvertFrom-Json) {
-    $propertyDetail = $property | Get-Member -MemberType NoteProperty
-    $name = $propertyDetail.Name
-    switch ($name) {
-        'pi_system_url' { $url = $property."$name" }
-        Default { }
-    }
+$properties = Get-Content .\Properties.json | ConvertFrom-Json
+
+$url = $properties.pi_system_url
+if( $null -ne $properties.file_name){
+    $outputpath = $properties.file_name
+}else{
+    $outputpath = $outputpath = join-path -Path $env:USERPROFILE -ChildPath "desktop\PIPOChannelDetails.xlsx"
 }
 
 [Xml] $SOAPRequest = Get-Content .\ChannelQueryRequest.xml
@@ -94,7 +94,7 @@ Write-Host 'Preparing Excel Output...'
 
 #open excell
 $excel = New-Object -ComObject excel.application
-$excel.visible = $True
+$excel.visible = $false
 $workbook = $excel.Workbooks.Add()
 
 #give the remaining worksheet a name
@@ -137,6 +137,5 @@ $jdbcChannelSheet.UsedRange.EntireColumn.AutoFit() | Out-Null
 
 
 #saving & closing the file
-$outputpath = join-path -Path $env:USERPROFILE -ChildPath "desktop\PIPOChannelDetails-XP4.xlsx"
 $workbook.SaveAs($outputpath)
 $excel.Quit()
