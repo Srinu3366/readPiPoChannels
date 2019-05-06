@@ -20,3 +20,5 @@ Login credentials for `CommunicationChannelService`
 A pop-up will be displayed asking for PI system credentials. These credentials will be used to access `CommunicationChannelService`
 
 ![Enter PI System credentials](https://github.com/Srinu3366/readPiPoChannels/blob/11ba47356ac2ee97b81cdb1853a9521b20bb9ab8/docs/images/Login.png)
+
+TODO - Add option to configure required channel parameters in Properties.json file
