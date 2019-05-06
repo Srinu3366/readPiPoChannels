@@ -1,42 +1,3 @@
-$xlAutomatic = -4105
-$xlBottom = -4107
-$xlCenter = -4108
-$xlContext = -5002
-$xlContinuous = 1
-$xlDiagonalDown = 5
-$xlDiagonalUp = 6
-$xlEdgeBottom = 9
-$xlEdgeLeft = 7
-$xlEdgeRight = 10
-$xlEdgeTop = 8
-$xlInsideHorizontal = 12
-$xlInsideVertical = 11
-$xlNone = -4142
-$xlThin = 2
-$xlMedium = -4138
-$xlThick = 4 
-function FormatExcel {
-    param (
-        $excelSheet
-    )   
-    #adjusting the column width so all data's properly visible
-    # $usedRange = $fileChannelSheet.UsedRange	
-    $excelSheet.UsedRange.EntireColumn.AutoFit() | Out-Null
-    $selection = $excelSheet.UsedRange
-    [void]$selection.select()
-    $selection.Borders.Item($xlEdgeLeft).LineStyle = $xlContinuous
-    $selection.Borders.Item($xlEdgeLeft).ColorIndex = $xlAutomatic
-    $selection.Borders.Item($xlEdgeLeft).Color = 1
-    $selection.Borders.Item($xlEdgeLeft).Weight = $xlMedium
-    $selection.Borders.Item($xlEdgeTop).LineStyle = $xlContinuous
-    $selection.Borders.Item($xlEdgeBottom).LineStyle = $xlContinuous
-    $selection.Borders.Item($xlEdgeRight).LineStyle = $xlContinuous
-    $selection.Borders.Item($xlInsideVertical).LineStyle = $xlContinuous
-    $selection.Borders.Item($xlInsideHorizontal).LineStyle = $xlContinuous
-
-    return $excelSheet
-}
-
 Get-ChildItem -Path ".\functions" -Filter *.ps1 | ForEach-Object {
     . $_.FullName
 }
@@ -69,7 +30,7 @@ $bytes = [System.Text.Encoding]::UTF8.GetBytes(
 )
 $authorization = 'Basic {0}' -f ([Convert]::ToBase64String($bytes))
 
-Write-Host 'Read Channel Names.....'
+Write-Host 'Reading Channel Names.....'
 # Call the web-service to read all the channels
 $ReturnXml = CallPIChannelService $SOAPRequest $authorization $url
 
@@ -82,7 +43,7 @@ foreach ($channel in $ReturnXml.GetElementsByTagName('rn3:CommunicationChannelID
     $channelObjList += $channelObj
 }
 
-Write-Host 'Read Channel XML configuration.....'
+Write-Host 'Reading Channel XML configuration.....'
 foreach ( $channel in $channelObjList ) {
     $request = [Xml] $SOAPReadChannelRequest.OuterXml.Replace("{{PartyID}}", $channel.PartyID).Replace("{{ComponentID}}", $channel.ComponentID).Replace("{{ChannelID}}", $channel.ChannelID)
 
@@ -129,53 +90,53 @@ foreach ( $channel in $channelObjList ) {
     }
 }
 
-Write-Host 'Prepare Excel Output...'
+Write-Host 'Preparing Excel Output...'
 
 #open excell
 $excel = New-Object -ComObject excel.application
 $excel.visible = $True
-
-#add a default workbook
 $workbook = $excel.Workbooks.Add()
 
 #give the remaining worksheet a name
-$fileChannelSheet = $workbook.Worksheets.Item(1)
-$fileChannelSheet.Name = 'File Channels'
-
-$fileChannelSheet = FileChannelToExcel $fileChannels $fileChannelSheet
+$otherChannelsSheet = $workbook.Worksheets.Item(1)
+$otherChannelsSheet.name = 'Other Channels'
+$otherChannelsSheet = OtherAdapterChannelsToExcel $otherChannels $otherChannelsSheet
 #adjusting the column width so all data's properly visible
+$otherChannelsSheet.UsedRange.EntireColumn.AutoFit() | Out-Null
+
+$idocChannelsSheet = $workbook.Worksheets.add()
+$idocChannelsSheet.name = 'Idoc Channels'
+$idocChannelsSheet = IdocChannelToExcel $idocChannels $idocChannelsSheet
+$idocChannelsSheet.UsedRange.EntireColumn.AutoFit() | Out-Null
+
+$restChannelsSheet = $workbook.Worksheets.add()
+$restChannelsSheet.name = 'REST Channels'
+$restChannelsSheet = RestChannelToExcel $restChannels $restChannelsSheet
+$restChannelsSheet.UsedRange.EntireColumn.AutoFit() | Out-Null
+
+$soapChannelsSheet = $workbook.Worksheets.add()
+$soapChannelsSheet.name = 'SOAP Channels'
+$soapChannelsSheet = SoapChannelToExcel $soapChannels $soapChannelsSheet
+$soapChannelsSheet.UsedRange.EntireColumn.AutoFit() | Out-Null
+
+$sftpChannelSheet = $workbook.Worksheets.add()
+$sftpChannelSheet.name = 'SFTP Channels'
+$sftpChannelSheet = SftpChannelToExcel $sftpChannels $sftpChannelSheet
+$sftpChannelSheet.UsedRange.EntireColumn.AutoFit() | Out-Null
+
+$fileChannelSheet = $workbook.Worksheets.add()
+$fileChannelSheet.Name = 'File Channels'
+$fileChannelSheet = FileChannelToExcel $fileChannels $fileChannelSheet
 $fileChannelSheet.UsedRange.EntireColumn.AutoFit() | Out-Null
 
 
 $jdbcChannelSheet = $workbook.Worksheets.add()
 $jdbcChannelSheet.name = 'JDBC Channels'
-
 $jdbcChannelSheet = JdbcChannelToExcel $jdbcChannels $jdbcChannelSheet
-
 $jdbcChannelSheet.UsedRange.EntireColumn.AutoFit() | Out-Null
 
 
-$sftpChannelSheet = $workbook.Worksheets.add()
-$sftpChannelSheet.name = 'SFTP Channels'
-
-$sftpChannelSheet = SftpChannelToExcel $sftpChannels $sftpChannelSheet
-
-$sftpChannelSheet.UsedRange.EntireColumn.AutoFit() | Out-Null
-
-
-$soapChannelsSheet = $workbook.Worksheets.add()
-$soapChannelsSheet.name = 'SOAP Channels'
-
-$restChannelsSheet = $workbook.Worksheets.add()
-$restChannelsSheet.name = 'REST Channels'
-
-$idocChannelsSheet = $workbook.Worksheets.add()
-$idocChannelsSheet.name = 'Idoc Channels'
-
-$otherChannelsSheet = $workbook.Worksheets.add()
-$otherChannelsSheet.name = 'Other Channels'
-
 #saving & closing the file
-$outputpath = join-path -Path $env:USERPROFILE -ChildPath "desktop\PIPOChannelDetails.xlsx"
+$outputpath = join-path -Path $env:USERPROFILE -ChildPath "desktop\PIPOChannelDetails-XP4.xlsx"
 $workbook.SaveAs($outputpath)
 $excel.Quit()
