@@ -59,8 +59,9 @@ foreach ( $channel in $channelObjList ) {
         }
         $ReturnXml.OuterXml | Out-File $fileName
     }
-    $direction = $ReturnXml.GetElementsByTagName('rn3:CommunicationChannel').Direction
 
+    $direction = $ReturnXml.GetElementsByTagName('rn3:CommunicationChannel').Direction
+    $adapterEngine = $ReturnXml.GetElementsByTagName('rn3:CommunicationChannel').AdapterEngineName
     $adapterType = $ReturnXml.GetElementsByTagName('rn3:AdapterMetadata').name
     $channelObj = New-Object -TypeName PSObject
     Add-Member -InputObject $channelObj -MemberType 'NoteProperty' -Name 'PartyID' -Value $channel.PartyID
@@ -68,6 +69,7 @@ foreach ( $channel in $channelObjList ) {
     Add-Member -InputObject $channelObj -MemberType 'NoteProperty' -Name 'ChannelID' -Value $channel.ChannelID
     Add-Member -InputObject $channelObj -MemberType 'NoteProperty' -Name 'Direction' -Value $direction
     Add-Member -InputObject $channelObj -MemberType 'NoteProperty' -Name 'AdapterType' -Value $adapterType
+    Add-Member -InputObject $channelObj -MemberType 'NoteProperty' -Name 'AdapterEngine' -Value $adapterEngine
 
     switch ($adapterType) {
         'File' {
