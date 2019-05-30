@@ -17,15 +17,18 @@ function RestChannelToExcel {
             $excelSheet.Cells($i,3).Interior.ColorIndex = 16
             $excelSheet.Cells($i, 4) = 'Direction'
             $excelSheet.Cells($i,4).Interior.ColorIndex = 16
-            $excelSheet.Cells($i, 5) = 'UrlPattern'
+            $excelSheet.Cells($i, 5) = 'AdapterEngine'
             $excelSheet.Cells($i,5).Interior.ColorIndex = 16
+            $excelSheet.Cells($i, 6) = 'UrlPattern'
+            $excelSheet.Cells($i,6).Interior.ColorIndex = 16
             $i++
         }
         $excelSheet.Cells($i, 1) = $channel.PartyID
         $excelSheet.Cells($i, 2) = $channel.ComponentID
         $excelSheet.Cells($i, 3) = $channel.ChannelID
         $excelSheet.Cells($i, 4) = $channel.Direction
-        $excelSheet.Cells($i, 5) = $channel.UrlPattern
+        $excelSheet.Cells($i, 5) = $channel.AdapterEngine
+        $excelSheet.Cells($i, 6) = $channel.UrlPattern
         $i++
     }
     return $excelSheet

@@ -17,21 +17,24 @@ function SoapChannelToExcel {
             $excelSheet.Cells($i,3).Interior.ColorIndex = 16
             $excelSheet.Cells($i, 4) = 'Direction'
             $excelSheet.Cells($i,4).Interior.ColorIndex = 16
-            $excelSheet.Cells($i, 5) = 'TargetUrl'
+            $excelSheet.Cells($i, 5) = 'AdapterEngine'
             $excelSheet.Cells($i,5).Interior.ColorIndex = 16
-            $excelSheet.Cells($i, 6) = 'UserName'
+            $excelSheet.Cells($i, 6) = 'TargetUrl'
             $excelSheet.Cells($i,6).Interior.ColorIndex = 16
-            $excelSheet.Cells($i, 7) = 'HttpDestination'
+            $excelSheet.Cells($i, 7) = 'UserName'
             $excelSheet.Cells($i,7).Interior.ColorIndex = 16
+            $excelSheet.Cells($i, 8) = 'HttpDestination'
+            $excelSheet.Cells($i,8).Interior.ColorIndex = 16
             $i++
         }
         $excelSheet.Cells($i, 1) = $channel.PartyID
         $excelSheet.Cells($i, 2) = $channel.ComponentID
         $excelSheet.Cells($i, 3) = $channel.ChannelID
         $excelSheet.Cells($i, 4) = $channel.Direction
-        $excelSheet.Cells($i, 5) = $channel.TargetUrl
-        $excelSheet.Cells($i, 6) = $channel.UserName
-        $excelSheet.Cells($i, 7) = $channel.HttpDestination
+        $excelSheet.Cells($i, 5) = $channel.AdapterEngine
+        $excelSheet.Cells($i, 6) = $channel.TargetUrl
+        $excelSheet.Cells($i, 7) = $channel.UserName
+        $excelSheet.Cells($i, 8) = $channel.HttpDestination
         $i++
     }
     return $excelSheet
